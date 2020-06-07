@@ -11,7 +11,7 @@ app.secret_key="gr3at_d@y_101"
 login_manager=LoginManager()
 login_manager.login_view='login'
 login_manager.init_app(app)
-app.config['FILE_UPLOAD']="fullstack/3D/static/blog/"
+app.config['FILE_UPLOAD']="/static/blog/"
 
 def cvt(st):
     pass
@@ -197,3 +197,4 @@ def logout():
 
 
 
+app.run()

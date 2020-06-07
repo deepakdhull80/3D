@@ -99,7 +99,8 @@ def adduser(email,user_name,password):
         user_collection.insert_one({"_id":user_name,"email":email,"password":hash_password})
         add_blog(user_name,"Hello "+user_name,"Here I'm welcome to you 3D devotional love.",img='/static/img/portfolio/app1.jpg')
         add_info(user_name,"","","","")
-        os.mkdir("fullstack/3D/static/blog/"+user_name)
+        os.mkdir("/static/blog/"+user_name)
     else:
         print('hello')
 # adduser("tmp@3D.com","tmp1","deepak")
+
