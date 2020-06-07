@@ -37,6 +37,7 @@ def add_blog(username,title,text,img="/static/img/portfolio/app1.jpg"):
     if user_blog.find_one({"_id":username}):
         u=count(username)+1
         blog_tmp=get_blog(username)
+        text.replace("\n","<br>")
         blog_tmp["blog"+str(u)]={"title":title,"text":text,"date":time.localtime(),"img_path":img}
         user_blog.update_one({"_id":username},{"$set":{"blog":blog_tmp}})
         print("added")

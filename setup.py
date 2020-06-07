@@ -1,7 +1,7 @@
 from flask import Flask,render_template,request,redirect,url_for
 import flask_login
 from flask_login import LoginManager,login_user,login_required,current_user ,logout_user
-from db import getuser,adduser,get_blog,add_blog,get_limit_blog,get_info
+from db import getuser,adduser,get_blog,add_blog,get_limit_blog,get_info,edit_blog,delete_blog
 import os
 # import user
 
@@ -13,21 +13,79 @@ login_manager.login_view='login'
 login_manager.init_app(app)
 app.config['FILE_UPLOAD']="fullstack/3D/static/blog/"
 
+def cvt(st):
+    pass
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return getuser(user_id)
 
+# place to work tomorrow-------------------------------
+
+@app.route('/my-blog/<blog>/edit_blog',methods=["POST","GET"])
+def edit_blogs(blog):
+    if current_user.is_authenticated:
+        data=get_blog(current_user.username)
+        cur_blog=data[blog]
+        return render_template('edit_blog.html',user=current_user,data=cur_blog,blog_name=blog)
+    return redirect(url_for('login'))
+
+
+
+@app.route('/add-blog/edit',methods=["POST","GET"])
+def edit_cur_blog():
+    if current_user.is_authenticated:
+        if request.method=="POST":
+            title=request.form['title']
+            text=request.form['text']
+            text=text.replace("\n","<br>")
+            blog_name=request.form['blog_name']
+            path=""
+            if request.files['blog_img']:
+                fil=request.files['blog_img']
+                # print(fil.filename)
+                # fil.filename="deepak."+fil.filename.split('.')[1]
+                des="/".join([app.config['FILE_UPLOAD']+current_user.username,fil.filename])
+                path=des
+                fil.save(des)
+                path=path.split('3D')[1]
+            else:
+                path="/static/img/portfolio/app1.jpg"
+            # print(text)
+            edit_blog(current_user.username,blog_name,title,text,img=path)
+            return redirect(url_for('my_blog'))
+        return redirect(url_for('my_blog'))
+    return redirect(url_for('login'))
+
+
+@app.route('/my-blog/<blog>/delete_blog',methods=["POST","GET"])
+def delete(blog):
+    if current_user.is_authenticated:
+        delete_blog(current_user.username,blog)
+        return redirect(url_for('my_blog'))
+    return redirect(url_for('login'))
+
+#----------------------------------------------------------------------
 
 @app.route('/my-blog',methods=["POST","GET"])
 def my_blog():
     if current_user.is_authenticated:
         data=get_blog(current_user.username)
+        tmp={}
+        for i in sorted(data,reverse=True):
+            tmp[i]=data[i]
         # info=get_info(current_user.username)
-        return render_template('view_blog.html',user=current_user,data=data)
+        return render_template('view_blog.html',user=current_user,data=tmp)
     return redirect(url_for('login'))
 
 
+@app.route('/my-blog/<blog>',methods=["POST","GET"])
+def blog_page(blog):
+    if current_user.is_authenticated:
+        data=get_blog(current_user.username)
+        return render_template('blog.html',data=data[blog],blog_name=blog,user=current_user)   
+    return redirect(url_for('login'))
 
 
 
@@ -50,6 +108,7 @@ def write():
     if request.method=="POST":
         title=request.form['title']
         text=request.form['text']
+        text=text.replace("\n","<br>")
         path=""
         if request.files['blog_img']:
             fil=request.files['blog_img']
@@ -138,6 +197,3 @@ def logout():
 
 
 
-
-if __name__=='__main__':
-    app.run(debug=True)

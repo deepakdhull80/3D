@@ -38,18 +38,19 @@
   		text-transform: capitalize;
   	}
   	.blog-image{
-  		max-height: 300px;
-  		max-width: 400px;
-  		margin-left: 60px;
-  		margin-bottom: 10px;
+      max-height: 600px;
+      max-width: 700px;
+  		
+  		margin-bottom: 25px;
+      padding: 2px 2px 1px 1px;
   	}
-  	.blog-image:hover{
+  	/*.blog-image:hover{
   		transform: scale(1.5);
   		margin-left: 100px;
   		transition-delay: 0.2s;
   		opacity: 60%;
 
-  	}
+  	}*/
   	.blog-date{
   		margin-top: -10px;
   		margin-left: 6px;
@@ -119,23 +120,23 @@
 	</section><!-- #hero -->
 
 	<section class="blogs">
-		{% for blog in data %}
 		<div class="blogs-container">
-			<a href="/my-blog/{{ blog }}"><h2 class="blog-title">{{ data[blog]['title'] }}</h2></a>
-			<div><div class="blog-date">Created : {{ data[blog]['date'][2] }}-{{ data[blog]['date'][1] }}-{{ data[blog]['date'][0] }}</div></div>
+			<a href="/my-blog/{{ blog_name }}/edit_blog"><h2 class="blog-title">{{ data['title'] }}</h2></a>
+			<div><div class="blog-date">Created : {{ data['date'][2] }}-{{ data['date'][1] }}-{{ data['date'][0] }}</div></div>
 			<!-- [2020, 6, 3, 12, 3, 14, 2, 155, 0] -->
 			<br>
-			{% if data[blog]['img_path'] %}
-				<img class="blog-image" src="{{ data[blog]['img_path'] }}">
+			{% if data['img_path'] %}
+				<img class="blog-image" src="{{ data['img_path'] }}">
 			{% endif %}
-			{% autoescape false %}
-			<p class="blog-text"> {{ data[blog]['text'][:200] }}...</p>
-			{% endautoescape %}
+      {% autoescape false %}
+        <p class="blog-text"> {{ data['text'] }}</p>
+      {% endautoescape %}
+			
 		</div>
-		{% endfor %}
 	</section>
 
 </body>
+
 <script src="/static/lib/jquery/jquery.min.js"></script>
   <script src="/static/lib/jquery/jquery-migrate.min.js"></script>
   <script src="/static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
